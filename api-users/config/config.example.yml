@@ -1,0 +1,8 @@
+# Altere o nome deste arquivo para config.yml,
+# e altere ou crie as Variaveis de Ambiente.
+
+environment: "dev"
+port: ":6000"
+mongo:
+  server: "mongodb://localhost:27017"
+  database: "API_USERS_DB"
