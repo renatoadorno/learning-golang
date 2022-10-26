@@ -8,49 +8,45 @@ import (
 type UserResponse struct {
 	Status  int       `json:"status"`
 	Message string    `json:"message"`
-	Data    *echo.Map `json:"data"`
+	Data    interface{} `json:"data"`
 }
 
-func BadRequest(err error) (int, UserResponse) {
+func BadRequest(err error, msg string) (int, UserResponse) {
 	status := http.StatusBadRequest
-	res := UserResponse{
+
+	return status, UserResponse{
 		Status:  http.StatusBadRequest,
-		Message: "error",
-		Data:    &echo.Map{"data": err.Error},
+		Message: msg,
+		Data:    &echo.Map{"error": err},
 	}
-
-	return status, res
 }
 
-func InternalError(err error) (int, UserResponse) {
+func InternalError(err error, msg string) (int, UserResponse) {
 	status := http.StatusInternalServerError
-	res := UserResponse{
+
+	return status, UserResponse{
 		Status:  http.StatusInternalServerError,
-		Message: "error",
-		Data:    &echo.Map{"data": err.Error},
+		Message: msg,
+		Data:    &echo.Map{"error": err},
 	}
-
-	return status, res
-}
-
-func Created(result interface{}) (int, UserResponse) {
-	status := http.StatusCreated
-	res := UserResponse{
-		Status:  http.StatusCreated,
-		Message: "success",
-		Data:    &echo.Map{"data": result},
-	}
-
-	return status, res
 }
 
 func Ok(result interface{}) (int, UserResponse) {
 	status := http.StatusOK
-	res := UserResponse{
-		Status:  http.StatusOK,
-		Message: "success",
-		Data:    &echo.Map{"data": result},
-	}
 
-	return status, res
+	return status, UserResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    result,
+	}
+}
+
+func Created(result interface{}) (int, UserResponse) {
+	status := http.StatusCreated
+
+	return status, UserResponse{
+		Status:  http.StatusCreated,
+		Message: "Success",
+		Data:    result,
+	}
 }
