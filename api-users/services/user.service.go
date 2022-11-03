@@ -1,27 +1,13 @@
 package services
 
 import (
-	"api-users/database"
 	"api-users/models"
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var (
-	userColl *mongo.Collection = database.UserCollection("users")
-)
-
-func Insert(ctx context.Context, user models.Users) (interface{}, error) {
-	newUser := models.Users{
-		Id:       primitive.NewObjectID(),
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: user.Password,
-	}
-
-	result, err := userColl.InsertOne(ctx, newUser)
+func CreateUser(ctx context.Context, user models.Users) (interface{}, error) {
+	result, err := models.Insert(ctx, user)
 	if err != nil {
 		return result, err
 	}
@@ -29,10 +15,38 @@ func Insert(ctx context.Context, user models.Users) (interface{}, error) {
 	return result, nil
 }
 
-func Get(ctx context.Context, userId string, user models.Users) (interface{}, error) {
-	objId, _ := primitive.ObjectIDFromHex(userId)
+func GetUserById(ctx context.Context, userId string, user models.Users) (models.Users, error) {
+	result, err := models.GetById(ctx, user, userId)
+	if err != nil {
+		return result, err
+	}
 
-	err := userColl.FindOne(ctx, bson.M{"id": objId}).Decode(&user)
+	return result, nil
+}
 
-	return user, err
+func UpdateUserById(ctx context.Context, userId string, user models.Users) (interface{}, error) {
+	result, err := models.UpdateById(ctx, user, userId)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}
+
+func DeleteUserById(ctx context.Context, userId string, user models.Users) (*mongo.DeleteResult, error) {
+	result, err := models.DeleteById(ctx, user, userId)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}
+
+func GetAllUsers(ctx context.Context, user models.Users) ([]models.Users, error) {
+	result, err := models.GetAll(ctx, user)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
